@@ -11,6 +11,7 @@
 		D97AB6C32B9770F100C9821E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D97AB6C22B9770F100C9821E /* ContentView.swift */; };
 		D97AB6C52B9770F200C9821E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D97AB6C42B9770F200C9821E /* Assets.xcassets */; };
 		D97AB6C82B9770F200C9821E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D97AB6C72B9770F200C9821E /* Preview Assets.xcassets */; };
+		D97AB6CF2B97710A00C9821E /* DessertModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D97AB6CE2B97710A00C9821E /* DessertModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +20,7 @@
 		D97AB6C22B9770F100C9821E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		D97AB6C42B9770F200C9821E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D97AB6C72B9770F200C9821E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		D97AB6CE2B97710A00C9821E /* DessertModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DessertModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +55,7 @@
 			children = (
 				D97AB6C02B9770F100C9821E /* Desserts_FetchApp.swift */,
 				D97AB6C22B9770F100C9821E /* ContentView.swift */,
+				D97AB6CE2B97710A00C9821E /* DessertModel.swift */,
 				D97AB6C42B9770F200C9821E /* Assets.xcassets */,
 				D97AB6C62B9770F200C9821E /* Preview Content */,
 			);
@@ -138,6 +141,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D97AB6C32B9770F100C9821E /* ContentView.swift in Sources */,
+				D97AB6CF2B97710A00C9821E /* DessertModel.swift in Sources */,
 				D97AB6C12B9770F100C9821E /* Desserts_FetchApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
