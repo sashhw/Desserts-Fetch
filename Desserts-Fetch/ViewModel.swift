@@ -9,14 +9,30 @@ import Foundation
 
 @MainActor class ViewModel: ObservableObject {
     @Published private(set) var desserts: [Dessert] = []
-    @Published var selectedDessert: Dessert?
+    @Published var selectedDessert: Dessert? {
+        didSet {
+            fetchDetailsIfNeeded()
+        }
+    }
     @Published var dessertDetails: DessertDetails?
+//    @Published var isDetailPresented: Bool = false
+    @Published var isLoading: Bool = false
+    @Published var error: Error?
 
     func fetchDesserts() async {
+        isLoading = true
         do {
-            self.desserts = try await fetchDessertsData()
+            desserts = try await fetchDessertsData()
         } catch {
-            print("Error fetching desserts: \(error)")
+            self.error = error
+        }
+        isLoading = false
+    }
+
+    private func fetchDetailsIfNeeded() {
+        guard let id = selectedDessert?.id else { return }
+        Task {
+            await fetchDetails(id: id)
         }
     }
 
@@ -24,8 +40,9 @@ import Foundation
         do {
             let details = try await fetchDessertDetails(id: id)
             self.dessertDetails = details
+//            self.isDetailPresented = true
         } catch {
-            print("Error fetching dessert details: \(error)")
+            self.error = error
         }
     }
 
