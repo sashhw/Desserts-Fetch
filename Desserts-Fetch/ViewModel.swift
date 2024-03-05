@@ -63,8 +63,10 @@ class ViewModel {
             let decoded = try JSONDecoder().decode(DessertResponse.self, from: data)
             return decoded.desserts
         } catch {
-            throw NetworkError.parsingError
+            errorMessage = error.localizedDescription
+            showErrorAlert = true
         }
+        return []
     }
 
     private func fetchDessertDetails(id: String) async throws -> DessertDetails? {
@@ -76,12 +78,13 @@ class ViewModel {
             let decoded = try JSONDecoder().decode(DetailResponse.self, from: data)
             return decoded.details.first
         } catch {
-            throw NetworkError.parsingError
+            errorMessage = error.localizedDescription
+            showErrorAlert = true
         }
+        return nil
     }
 }
 
-enum NetworkError: Error {
+enum NetworkError: Error, LocalizedError {
     case invalidURL
-    case parsingError
 }
