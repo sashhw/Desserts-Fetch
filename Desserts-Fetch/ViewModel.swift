@@ -15,16 +15,17 @@ import Foundation
         }
     }
     @Published var dessertDetails: DessertDetails?
-//    @Published var isDetailPresented: Bool = false
+    @Published var isDetailPresented: Bool = false
     @Published var isLoading: Bool = false
-    @Published var error: Error?
+    @Published var errorMessage: String?
 
     func fetchDesserts() async {
         isLoading = true
+        errorMessage = nil
         do {
             desserts = try await fetchDessertsData()
         } catch {
-            self.error = error
+            errorMessage = error.localizedDescription
         }
         isLoading = false
     }
@@ -40,9 +41,9 @@ import Foundation
         do {
             let details = try await fetchDessertDetails(id: id)
             self.dessertDetails = details
-//            self.isDetailPresented = true
+            self.isDetailPresented = true
         } catch {
-            self.error = error
+            errorMessage = error.localizedDescription
         }
     }
 
@@ -68,7 +69,6 @@ import Foundation
 }
 
 enum NetworkError: Error {
-
     case invalidURL
     case networkError(Error)
 }

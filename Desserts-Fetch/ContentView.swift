@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var viewModel = ViewModel()
-    @State private var isPresented = false
 
     var body: some View {
         VStack {
@@ -48,26 +47,20 @@ struct ContentView: View {
                     }
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        if let id = dessert.id {
-                            viewModel.selectedDessert = dessert
-                            Task {
-                                await viewModel.fetchDetails(id: id)
-                            }
-                            isPresented = true
-                        }
+                        viewModel.selectedDessert = dessert
                     }
                 }
             }
             .listStyle(PlainListStyle())
-            .onAppear {
-                Task {
-                    await viewModel.fetchDesserts()
-                }
+        }
+        .sheet(isPresented: $viewModel.isDetailPresented) {
+            if let dessertDetails = viewModel.dessertDetails {
+                DetailSheetView(details: dessertDetails, isPresented: $viewModel.isDetailPresented)
             }
         }
-        .sheet(isPresented: $isPresented) {
-            if let dessertDetails = viewModel.dessertDetails {
-                DetailSheetView(details: dessertDetails, isPresented: $isPresented)
+        .onAppear {
+            Task {
+                await viewModel.fetchDesserts()
             }
         }
     }
