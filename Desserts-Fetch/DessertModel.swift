@@ -131,4 +131,32 @@ struct DessertDetails: Codable {
         case measurement19 = "strMeasure19"
         case measurement20 = "strMeasure20"
     }
+
+    var instructionsWithBreak: String {
+        return instructions.replacingOccurrences(of: "\n", with: "\n\n")
+    }
+
+    var joinedIngredientsMeasurements: String {
+        var result = ""
+        for i in 1...20 {
+            if let ingredient = self.value(for: "ingredient\(i)"), !ingredient.isEmpty {
+                if let measurement = self.value(for: "measurement\(i)"), !measurement.isEmpty {
+                    result.append("\(measurement) \(ingredient)\n")
+                } else {
+                    result.append("\(ingredient)\n")
+                }
+            }
+        }
+        return result.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private func value(for key: String) -> String? {
+        let mirror = Mirror(reflecting: self)
+        for (label, value) in mirror.children {
+            if let label = label, label == key, let stringValue = value as? String, !stringValue.isEmpty {
+                return stringValue
+            }
+        }
+        return nil
+    }
 }

@@ -9,9 +9,6 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var viewModel = ViewModel()
-    @State private var desserts: [Dessert] = []
-    @State private var selectedDessert: Dessert?
-    @State private var dessertDetails: DessertDetails?
     @State private var isPresented = false
 
     var body: some View {
@@ -26,7 +23,7 @@ struct ContentView: View {
                     .frame(width: 25, height: 25)
             }
             List {
-                ForEach(desserts, id: \.self) { dessert in
+                ForEach(viewModel.desserts, id: \.self) { dessert in
                     HStack(alignment: .center) {
                         AsyncImage(url: URL(string: dessert.imageURL)) { image in
                             image
@@ -52,9 +49,9 @@ struct ContentView: View {
                     .contentShape(Rectangle())
                     .onTapGesture {
                         if let id = dessert.id {
-                            selectedDessert = dessert
+                            viewModel.selectedDessert = dessert
                             Task {
-                                await fetchDetails(id: id)
+                                await viewModel.fetchDetails(id: id)
                             }
                             isPresented = true
                         }
@@ -64,18 +61,18 @@ struct ContentView: View {
             .listStyle(PlainListStyle())
             .onAppear {
                 Task {
-                    do {
-                        desserts = try await viewModel.fetch()
-                    } catch {
-                        print("Error: \(error)")
-                    }
+                    await viewModel.fetchDesserts()
                 }
             }
         }
+        .sheet(isPresented: $isPresented) {
+            if let dessertDetails = viewModel.dessertDetails {
+                DetailSheetView(details: dessertDetails, isPresented: $isPresented)
+            }
+        }
     }
+}
 
-    func fetchDetails(id: String) async {
-        let details =  await viewModel.fetchDetails(id: id)
-        dessertDetails = details
-    }
+#Preview {
+    ContentView()
 }
