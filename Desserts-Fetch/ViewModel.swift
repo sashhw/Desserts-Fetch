@@ -56,21 +56,32 @@ class ViewModel {
 
     private func fetchDessertsData() async throws -> [Dessert] {
         guard let url = URL(string: "https://themealdb.com/api/json/v1/1/filter.php?c=Dessert") else {
-            return []
+            throw NetworkError.invalidURL
         }
-
-        let (data, _) = try await URLSession.shared.data(from: url)
-        let decoded = try JSONDecoder().decode(DessertResponse.self, from: data)
-        return decoded.desserts
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let decoded = try JSONDecoder().decode(DessertResponse.self, from: data)
+            return decoded.desserts
+        } catch {
+            throw NetworkError.parsingError
+        }
     }
 
     private func fetchDessertDetails(id: String) async throws -> DessertDetails? {
         guard let url = URL(string: "https://themealdb.com/api/json/v1/1/lookup.php?i=\(id)") else {
-            return nil
+            throw NetworkError.invalidURL
         }
-
-        let (data, _) = try await URLSession.shared.data(from: url)
-        let decoded = try JSONDecoder().decode(DetailResponse.self, from: data)
-        return decoded.details.first
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let decoded = try JSONDecoder().decode(DetailResponse.self, from: data)
+            return decoded.details.first
+        } catch {
+            throw NetworkError.parsingError
+        }
     }
+}
+
+enum NetworkError: Error {
+    case invalidURL
+    case parsingError
 }
