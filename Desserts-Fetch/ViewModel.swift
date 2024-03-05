@@ -7,25 +7,31 @@
 
 import Foundation
 
-@MainActor class ViewModel: ObservableObject {
-    @Published private(set) var desserts: [Dessert] = []
-    @Published var selectedDessert: Dessert? {
+@Observable
+class ViewModel {
+    private(set) var desserts: [Dessert] = []
+    var selectedDessert: Dessert? {
         didSet {
             fetchDetailsIfNeeded()
         }
     }
-    @Published var dessertDetails: DessertDetails?
-    @Published var isDetailPresented: Bool = false
-    @Published var isLoading: Bool = false
-    @Published var errorMessage: String?
+    var dessertDetails: DessertDetails?
+    var isDetailPresented: Bool = false
+    var isLoading: Bool = false
+    var errorMessage: String?
+    var showErrorAlert: Bool = false
 
     func fetchDesserts() async {
         isLoading = true
         errorMessage = nil
         do {
-            desserts = try await fetchDessertsData()
+            var fetchedDesserts = try await fetchDessertsData()
+            fetchedDesserts.sort(by: { $0.name < $1.name })
+            self.desserts = fetchedDesserts
+
         } catch {
             errorMessage = error.localizedDescription
+            showErrorAlert = true
         }
         isLoading = false
     }
@@ -44,12 +50,13 @@ import Foundation
             self.isDetailPresented = true
         } catch {
             errorMessage = error.localizedDescription
+            showErrorAlert = true
         }
     }
 
     private func fetchDessertsData() async throws -> [Dessert] {
         guard let url = URL(string: "https://themealdb.com/api/json/v1/1/filter.php?c=Dessert") else {
-            throw NetworkError.invalidURL
+            return []
         }
 
         let (data, _) = try await URLSession.shared.data(from: url)
@@ -66,9 +73,4 @@ import Foundation
         let decoded = try JSONDecoder().decode(DetailResponse.self, from: data)
         return decoded.details.first
     }
-}
-
-enum NetworkError: Error {
-    case invalidURL
-    case networkError(Error)
 }
